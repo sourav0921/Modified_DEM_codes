@@ -1,0 +1,84 @@
+#Single particle collision test
+
+atom_style    granular
+atom_modify   map array sort 0 0
+boundary      f f p
+newton        off
+
+communicate   single vel yes
+
+units         si
+
+hard_particles yes
+soft_particles yes
+
+region        domain block 0 0.03 0 0.03 0 0.03 units box
+create_box    1 domain    #2 domain
+
+neighbor      0.004 bin
+neigh_modify  delay 0
+
+
+#Material properties required for new pair styles
+
+#fix  m1 all property/global kn peratomtypepair 1 2608069.59    #3873
+#fix  m2 all property/global kt peratomtypepair 1 3538586.88    #1928
+#fix  m3 all property/global gamman peratomtypepair 1 0
+#fix  m4 all property/global gammat peratomtypepair 1 0
+#fix  m1 all property/global youngsModulus peratomtype 1.8E+11 1.6E+11 1.8E+11 #1.236E+11
+fix  m1 all property/global youngsModulus peratomtype 1.236E+11 
+#fix  m2 all property/global poissonsRatio peratomtype 0.23 0.23 0.23 #0.1
+fix  m2 all property/global poissonsRatio peratomtype 0.1
+#fix  m5 all property/global coefficientRestitution peratomtypepair 2 1.0 1.0 1.0 1.0 #0.8  #similar particle different wall
+#fix  m5 all property/global coefficientRestitution peratomtypepair 3 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 #0.8   #dissimilar particle different wall
+fix  m5 all property/global coefficientRestitution peratomtypepair 1 1.0
+#fix  m6 all property/global coefficientFriction peratomtypepair 2 1.0 1.0 1.0 1.0#0.092 #similar particle different wall
+#fix  m6 all property/global coefficientFriction peratomtypepair 3 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 #0.092  #dissimilar particle different wall
+fix  m6 all property/global coefficientFriction peratomtypepair 1 0.092
+
+
+#New pair style
+pair_style  gran model hertz tangential history tangential_damping off #Hertzian without cohesion
+pair_coeff  * *
+
+timestep    0.00000001
+
+
+# walls
+fix     xwalls1 all wall/gran model hertz tangential history primitive type 1 xplane 0.0 tangential_damping off 
+fix     xwalls2 all wall/gran model hertz tangential history primitive type 1 xplane 0.03 tangential_damping off
+fix     ywalls1 all wall/gran model hertz tangential history primitive type 1 yplane 0.0 tangential_damping off
+fix     ywalls2 all wall/gran model hertz tangential history primitive type 1 yplane 0.03 tangential_damping off
+fix      zwalls1 all wall/gran model hertz tangential history primitive type 1 zplane 0.0 tangential_damping off
+fix      zwalls2 all wall/gran model hertz tangential history primitive type 1 zplane 0.03 tangential_damping off
+
+
+#fix  gravi all gravity 9.81 vector 0.0 0.0 -1.0
+
+#create individual particle
+create_atoms	1 single 0.021998830712732 0.0149999591675889 0.015 
+set 		atom 1 type 1 diameter 0.005 density 4000 vx 3.898 vy 0.136 omegax 0 omegay 0 omegaz 0
+create_atoms	1 single 0.027 0.015 0.015 
+set		atom 2 type 1 diameter 0.005 density 4000 vx 0 vy 0 omegax 0 omegay 0 omegaz 0
+
+#apply nve integration to all particles that are inserted as single particles
+fix    integr all nve/sphere
+#output settings, include total thermal energy
+compute       1 all erotate/sphere
+compute       sph all ke
+fix sph all ave/time 1 1 1 c_1 c_sph file total_KE.txt 
+thermo_style  custom step atoms ke c_1 vol
+thermo        1000
+thermo_modify lost ignore norm no
+
+#insert the first particles so that dump is not empty
+run    1
+dump    1 all custom 1 post/dump.liggghts_run id type x y z ix iy iz vx vy vz fx fy fz omegax omegay omegaz radius
+#dump   dmp all custom/vtk 5 post/collision_*.vtk id type type x y z ix iy iz vx vy vz fx fy fz omegax omegay omegaz radius 
+#dump_modify    1 format "%g %g %8.12g %8.12g %g %g %g %g %g %g %g %8.12g %8.12g %g %g %g %g %g"
+dump_modify    1 format "%g %g %8.12g %8.12g %g %g %g %g %8.12g %8.12g %g %8.12g %8.12g %g %g %g %8.12g %g"    #have to use this modify command for accuracy
+#dump   dumpstress all mesh/gran/VTK 200 post/mesh_*.vtk stress wear cad
+
+#insert particles
+run    40000 upto
+unfix  ins
