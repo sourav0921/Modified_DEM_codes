@@ -1,0 +1,61 @@
+units		si
+atom_style	sphere
+dimension	3
+boundary 	f f f 
+
+#Initialisation
+
+region		sim_box block 0 25e-03 0 25e-03 0 200e-03
+create_box	1 sim_box
+
+### Set particles dia and mass
+create_atoms	1 single 10e-03 10e-03 5e-03
+set             type 1 diameter 5e-03
+set             type 1 mass     2.618e-04
+set		type 1 vx 0 vy 0 vz -3.9
+
+#group of atoms
+
+#group 		big_particles 		type 	1
+
+
+#multi neighbor and comm for efficiency
+
+
+#velocity	big_particles create 3e+16 87287 dist gaussian
+comm_modify	vel yes
+
+pair_style	granular
+pair_coeff 	* * hertz/material 1.236E+11 1 0.1 tangential mindlin NULL 0 0.092 damping tsuji
+
+fix 1 all wall/gran granular hertz/material 1.236E+11 1 0.1 tangential mindlin NULL 0 0.092 damping tsuji xplane 2.5e-03 82.5e-03  
+fix 2 all wall/gran granular hertz/material 1.236E+11 1 0.1 tangential mindlin NULL 0 0.092 damping tsuji yplane 2.5e-03 82.5e-03
+fix 3 all wall/gran granular hertz/material 1.236E+11 1 0.1 tangential mindlin NULL 0 0.092 damping tsuji zplane 0 NULL#25e-03 NULL 
+
+#fix		grav big_particles gravity 9.81 vector 0 0 -1
+#fix_modify 	grav energy yes
+
+#minimize 1.0e-4 1.0e-6 100 1000
+
+#Fix command for time integration 
+
+fix		1_integration all nve/sphere
+
+
+#Dumpfile
+
+dump		1 all custom 1 dump.dump id type x y z vx vy vz radius mass omegax omegay omegaz fx fy fz 
+#dump_modify 	1 format line "%d %d %20.15g %g %g %g %g %g %g %g %g %g %g %g" scale yes
+dump_modify 	1 format float %1.35g
+
+
+#Kinetic Energy output 
+
+#compute		1 particles temp/sphere
+thermo_style	custom step ke pe etotal 
+#thermo_modify	temp 1
+thermo		1000
+thermo_modify	lost ignore 
+restart 	90000 restart_spr.txt
+timestep	1e-8
+run		90000
