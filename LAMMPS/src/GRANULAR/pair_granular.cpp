@@ -1017,8 +1017,7 @@ void PairGranular::coeff(int narg, char **arg)
         Emod[i][j] = Emod[j][i] = normal_coeffs_one[0];
         poiss[i][j] = poiss[j][i] = normal_coeffs_one[2];
         normal_coeffs[i][j][0] = normal_coeffs[j][i][0] =
-          2*mix_stiffnessE(Emod[i][j],Emod[i][j];
-          //FOURTHIRDS*mix_stiffnessE(Emod[i][j],Emod[i][j],
+          2*mix_stiffnessE(Emod[i][j],Emod[i][j],
                                     poiss[i][j],poiss[i][j]);
       } else {
         normal_coeffs[i][j][0] = normal_coeffs[j][i][0] = normal_coeffs_one[0];
