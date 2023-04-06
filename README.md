@@ -9,5 +9,5 @@
 
 **Steps to run the modified LAMMPS code**
 1. Download the LIGGGHTS source code from https://github.com/CFDEMproject/LIGGGHTS-PUBLIC
-2. The modified code for the contact model can be implemented through first copying the src folder to the original LIGGGHTS-PUBLIC directory and then compile the software using the follwing command
+2. The modified code for the contact model can be implemented through first copying the ***src*** folder to the original LIGGGHTS-PUBLIC directory and then compile the software using the following command
 3. make auto
