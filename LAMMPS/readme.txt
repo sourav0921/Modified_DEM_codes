@@ -1,5 +1,2 @@
-Download the LAMMPS source file from "https://www.lammps.org/download.html"
-The current modification is tested for LAMMPS stable version "23 Jun 2022"
-The modified code for contact model can be implemented through first copying the src folder to the original src folder of the LAMMPS directory and then compile the software using the following command 
-make yes-GRANULAR
-make mpi
+1. Both files for particle-wall contact and particle-particle contact is modified
+2. Noraml spring stiffness expression is modified in the file ""
