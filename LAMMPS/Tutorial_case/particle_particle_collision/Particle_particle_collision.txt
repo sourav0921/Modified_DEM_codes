@@ -36,8 +36,8 @@ pair_style	granular
 #fix 3 all wall/gran hooke/history  2.0e+08 0 4.18e04   NULL 0 0 zplane 25e-03 NULL #wiggle z 7.75e-03  0.12171
 
 pair_coeff 	1 1 hertz/material 1.236E+11 0.9 0.1 tangential mindlin NULL 0 0.092 damping tsuji
-#pair_coeff 	1 1 hertz/material 3.6e11 0 0.23 tangential mindlin NULL 0 0 damping velocity
-#pair_coeff 	2 2 hertz/material 3.6e11 0 0.23 tangential mindlin NULL 0 0 damping velocity
+#pair_coeff 	1 1 hertz/material 3.6e11 0 0.23 tangential mindlin NULL 0 0 damping tsuji
+#pair_coeff 	2 2 hertz/material 3.6e11 0 0.23 tangential mindlin NULL 0 0 damping tsuji
 
 fix 1 all wall/gran granular hertz/material 7e10 1.0 0.25 tangential mindlin NULL 0 0.0 damping tsuji xplane 2.5e-03 82.5e-03  
 fix 2 all wall/gran granular hertz/material 7e10 1.0 0.25 tangential mindlin NULL 0 0.0 damping tsuji yplane 2.5e-03 82.5e-03
