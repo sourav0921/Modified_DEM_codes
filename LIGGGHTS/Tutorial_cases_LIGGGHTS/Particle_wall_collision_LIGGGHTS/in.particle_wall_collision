@@ -25,7 +25,7 @@ neigh_modify  delay 0
 #fix  m2 all property/global kt peratomtypepair 1 3538586.88    #1928
 #fix  m3 all property/global gamman peratomtypepair 1 0
 #fix  m4 all property/global gammat peratomtypepair 1 0
-#fix  m1 all property/global youngsModulus peratomtype 1.8E+11 1.6E+11 1.8E+11 #1.236E+11
+#fix  m1 all property/global youngsModulus peratomtype 1.8E+11 1.6E+11 1.8E+11 
 fix  m1 all property/global youngsModulus peratomtype 1.236E+11 
 #fix  m2 all property/global poissonsRatio peratomtype 0.23 0.23 0.23 #0.1
 fix  m2 all property/global poissonsRatio peratomtype 0.1
